@@ -99,7 +99,8 @@ firewall or bind-safety settings to work around an import failure.
 
 TOS validates and starts the project. Before submitting downloads, complete the
 VPN/DNS/IPv6 checks in [acceptance.md](acceptance.md); healthy status alone does
-not prove isolation. No Transmission ports are published on the NAS. This script
+not prove isolation. Transmission web/RPC is published through Gluetun at `http://192.168.0.102:9091`,
+using the configured Transmission login. Torrent peer ports remain unpublished. This script
 does not configure application integrations or prove runtime readiness.
 
 ## Application setup

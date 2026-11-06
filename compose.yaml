@@ -24,6 +24,8 @@ services:
       FIREWALL: 'on'
       FIREWALL_INPUT_PORTS: '9091'
       DNS_UPSTREAM_IPV6: 'off'
+    ports:
+    - ${NAS_BIND_IP:?Set NAS_BIND_IP in a private .env}:9091:9091
     volumes:
     - type: bind
       source: ${CONFIG_ROOT:?Set CONFIG_ROOT in a private .env}/gluetun

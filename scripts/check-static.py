@@ -15,6 +15,7 @@ assert not any(k in t for k in ('ports', 'networks', 'dns', 'cap_add'))
 assert t['depends_on']['gluetun'] == {'condition': 'service_healthy', 'restart': True}
 g = s['gluetun']
 assert g['environment']['FIREWALL'] == 'on'
+assert g['ports'] == ['${NAS_BIND_IP:?Set NAS_BIND_IP in a private .env}:9091:9091']
 assert g['environment']['VPN_SERVICE_PROVIDER'] == 'nordvpn'
 assert g['environment']['VPN_TYPE'] == 'openvpn'
 assert 'FIREWALL_OUTBOUND_SUBNETS' not in g['environment']
