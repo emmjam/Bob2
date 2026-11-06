@@ -1,0 +1,4 @@
+# UNVALIDATED on TOS. Copy outside tracked templates; use absolute env path.
+# Gluetun loopback resolver in the shared network namespace; no fallback DNS.
+nameserver 127.0.0.1
+options timeout:2 attempts:2

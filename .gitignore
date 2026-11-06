@@ -1,0 +1,23 @@
+# Secrets and local overrides; keep reviewed templates trackable.
+.env
+.env.*
+!.env.example
+*.local.*
+compose.override.*
+/secrets/
+/private/
+/config/*
+!/config/*.example
+# Runtime state, databases, media, logs and backups never belong in Git.
+/data/
+/runtime/
+/appdata/
+/backups/
+*.db
+*.db-*
+*.sqlite*
+*.log
+*.pem
+*.key
+__pycache__/
+.DS_Store
