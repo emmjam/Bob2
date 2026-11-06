@@ -355,6 +355,9 @@ def write_portal(folder, values):
         text = text.replace('192.168.0.102:' + default,
                             values['NAS_BIND_IP'] + ':' + values[app + '_PORT'])
     page.write_text(text)
+    # nginx:alpine worker account; TOS ACLs require explicit ownership.
+    os.chown(folder, 101, 101)
+    os.chown(page, 101, 101)
     folder.chmod(0o755)
     page.chmod(0o644)
 
