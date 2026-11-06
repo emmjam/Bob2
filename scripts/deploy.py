@@ -198,8 +198,8 @@ def ipv4(value):
 def image(value):
     if not re.fullmatch(r'[A-Za-z0-9._/:@-]+', value):
         raise ValueError('Enter a valid full image reference without spaces.')
-    if ':' not in value.rsplit('/', 1)[-1] or value.endswith(':latest'):
-        raise ValueError('Supply an explicit release tag or digest, not latest.')
+    if ':' not in value.rsplit('/', 1)[-1]:
+        raise ValueError('Supply an image tag or digest.')
 
 
 def dotenv(value):
@@ -277,7 +277,7 @@ def main():
         raise ValueError('Unsupported bundle environment schema; update the deployer.')
     for key, repo in REPOS.items():
         while True:
-            value = ask(f'{key}: {repo}:<release> or {repo}@sha256:<digest>', validate=image)
+            value = ask(key, repo + ':latest', validate=image)
             if value.startswith(repo + ':') or value.startswith(repo + '@sha256:'):
                 values[key] = value
                 break

@@ -78,6 +78,12 @@ class DeploymentTests(unittest.TestCase):
                 chown.assert_not_called()
             self.assertEqual(path.stat().st_mode, before.st_mode)
 
+    def test_latest_image_default_is_accepted(self):
+        deploy.image('qmcgaw/gluetun:latest')
+        with patch('builtins.input', return_value=''):
+            self.assertEqual(deploy.ask('GLUETUN_IMAGE', 'qmcgaw/gluetun:latest', validate=deploy.image),
+                             'qmcgaw/gluetun:latest')
+
     def test_disjoint_paths(self):
         with self.assertRaises(ValueError):
             deploy.disjoint([Path('/data'), Path('/data/media')])

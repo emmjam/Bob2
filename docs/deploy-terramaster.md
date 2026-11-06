@@ -26,8 +26,8 @@ the process environment or use the hidden prompt after an access-denied response
 The script never saves the token. A 404 can also mean the repository/ref is wrong.
 
 The script prompts for every required setting, with the agreed film/TV paths and
-suggested directory, timezone and port defaults. Supply explicit image tags or
-digests; it does not pull images or select release versions for you. Credentials
+suggested directory, timezone and port defaults. Press Enter at each image prompt to use its `latest` default, or enter a specific
+tag/digest if preferred. The script does not pull images. Credentials
 are hidden and passwords confirmed. It writes a private mode-600 `.env`, creates
 the resolver file, and prepares the service/download directories. New service
 config directories are private to their app accounts. Existing directories are
@@ -76,7 +76,7 @@ Fill `.env` as described below and prepare directories/permissions yourself.
 | NORDVPN_SERVICE_USER / NORDVPN_SERVICE_PASSWORD | Nord OpenVPN service credentials, not account login |
 | NORDVPN_COUNTRIES | Your chosen supported country policy |
 | TRANSMISSION_USER / TRANSMISSION_PASSWORD | Choose private downloader RPC credentials |
-| All six *_IMAGE variables | Explicit reviewed tags/digests from the repositories listed in `.env.example`; no versions selected or pulled |
+| All six *_IMAGE variables | Wizard defaults to `latest` from the repositories listed in `.env.example`; press Enter to accept or override |
 
 Create config subdirectories named gluetun, transmission, sonarr, radarr,
 prowlarr and seerr under CONFIG_ROOT, plus complete and incomplete under
