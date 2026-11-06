@@ -30,8 +30,9 @@ are hidden and passwords confirmed. It writes a private mode-600 `.env`, creates
 the resolver file, and prepares the service/download directories. New service
 config directories are private to their app accounts. Existing directories are
 never recursively chowned or chmodded. If the chosen media account cannot write
-to existing pilot folders, it automatically grants the required ACL access to those exact
-directories. If ACL tools are unavailable, it stops for TOS permission setup.
+to existing pilot folders, it sets Plex ownership (10001:10002) on those exact directory entries and
+rechecks access. It does not recurse or change parent directories; POSIX named-user
+ACL grants were insufficient on the observed TOS share.
 
 The script checks the supplied ports by briefly binding them without listening;
 it does not inspect storage, Docker or Plex, or change Plex libraries. It never

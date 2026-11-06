@@ -129,6 +129,18 @@ class DeploymentTests(unittest.TestCase):
             self.assertEqual(deploy.available_port('SONARR_PORT', '8989', '192.168.0.102', set()), '8990')
             ask.assert_called_once()
 
+    def test_media_repair_changes_only_selected_directory_owner(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / 'bobFilms'
+            path.mkdir()
+            child = path / 'existing-film'
+            child.write_text('unchanged')
+            with patch.object(os, 'chown') as chown, \
+                    patch.object(deploy, 'access_as', return_value=True):
+                deploy.repair_media_owner(path, 10001, 10002)
+                chown.assert_called_once_with(path, 10001, 10002)
+            self.assertEqual(child.read_text(), 'unchanged')
+
     def test_disjoint_paths(self):
         with self.assertRaises(ValueError):
             deploy.disjoint([Path('/data'), Path('/data/media')])

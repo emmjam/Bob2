@@ -277,6 +277,15 @@ def prepare_owned(path, uid, gid, mode=0o2755):
     path.chmod(mode)  # media roots are traversable; service config stays private
 
 
+def repair_media_owner(path, uid, gid):
+    # TOS share ACLs may not honour a POSIX named-user grant. Own only the
+    # selected directory entry; never recurse into media or alter parent folders.
+    absolute(str(path))
+    os.chown(path, uid, gid)
+    if not access_as(path, uid, gid, os.R_OK | os.W_OK | os.X_OK):
+        raise ValueError(f'Access still denied after setting Plex ownership: {path}. No deployment started.')
+
+
 def access_as(path, uid, gid, flags):
     pid = os.fork()
     if pid == 0:
@@ -406,7 +415,7 @@ def main():
     print('\nPlanned directories:')
     for key in defaults:
         print(f'  {key}: {values[key]}')
-    print('New directories will be created with the selected owners. Existing ownership/permissions stay unchanged.')
+    print('New directories will be created with the selected owners. Existing app config ownership stays unchanged; inaccessible pilot media directories get Plex ownership.')
     if not yes('Write private config and prepare these directories?'):
         print('Stopped after extraction; no configuration or app directories created.')
         return
@@ -439,12 +448,8 @@ def main():
     if inaccessible:
         print('\nThe media account lacks access to these existing directories:')
         print('\n'.join(inaccessible))
-        if not shutil.which('setfacl'):
-            raise ValueError('Grant the selected media UID rwx on these specific folders in TOS, preserving Plex access. No deployment started.')
         for folder in inaccessible:
-            subprocess.run(['setfacl', '-m', f'u:{uid}:rwx', folder], check=True, capture_output=True)
-            if not access_as(folder, uid, gid, os.R_OK | os.W_OK | os.X_OK):
-                raise ValueError(f'Access still denied: {folder}. No deployment started.')
+            repair_media_owner(Path(folder), uid, gid)
     print('Private configuration saved; directories prepared. No Plex libraries were changed.')
     print('\nPreparation complete. TOS handles deployment and startup; no Docker commands were run.')
     print(f'TOS project directory: {destination}')
