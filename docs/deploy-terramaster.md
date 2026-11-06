@@ -72,7 +72,7 @@ Fill `.env` as described below and prepare directories/permissions yourself.
 | NAS_BIND_IP | Current trusted NAS IPv4; explicit address required |
 | SONARR_PORT / RADARR_PORT / PROWLARR_PORT / SEERR_PORT | Suggested `8989` / `7878` / `9696` / `5055`; availability unverified |
 | NORDVPN_SERVICE_USER / NORDVPN_SERVICE_PASSWORD | Read automatically from `/home/ian/.nordvpn` on TNAS; no credential prompts |
-| NORDVPN_COUNTRIES | Your chosen supported country policy |
+| NORDVPN_COUNTRIES | Automatically set to `Netherlands`; no prompt |
 | TRANSMISSION_USER / TRANSMISSION_PASSWORD | Choose private downloader RPC credentials |
 | All six *_IMAGE variables | Automatically set to `latest` from the repositories listed in `.env.example`; no prompts |
 

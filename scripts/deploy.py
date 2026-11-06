@@ -388,7 +388,8 @@ def main():
             break
     values.update(vpn_credentials)
     print('NordVPN credentials loaded from /home/ian/.nordvpn.')
-    for key in ('NORDVPN_COUNTRIES', 'TRANSMISSION_USER', 'TRANSMISSION_PASSWORD'):
+    values['NORDVPN_COUNTRIES'] = 'Netherlands'
+    for key in ('TRANSMISSION_USER', 'TRANSMISSION_PASSWORD'):
         secret = key != 'NORDVPN_COUNTRIES'
         while True:
             value = ask(key + (' (Nord service credentials, not account login)'

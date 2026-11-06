@@ -158,6 +158,8 @@ class DeploymentTests(unittest.TestCase):
                 if label in ('GitHub repository', 'Git branch, tag or commit'):
                     self.fail('Repository and branch must be hard-coded')
                 key = label.split(':')[0].split(' ')[0]
+                if key == 'NORDVPN_COUNTRIES':
+                    self.fail('NordVPN country must not prompt the user')
                 if key in deploy.REPOS:
                     self.fail('Image defaults must not prompt the user')
                 if key == 'CONFIG_ROOT':
@@ -189,6 +191,7 @@ class DeploymentTests(unittest.TestCase):
                 deploy.main()
                 commands.assert_not_called()
             self.assertTrue((destination / '.env').is_file())
+            self.assertIn("NORDVPN_COUNTRIES='Netherlands'", (destination / '.env').read_text())
             for key, repo in deploy.REPOS.items():
                 self.assertIn(f"{key}='{repo}:latest'", (destination / '.env').read_text())
             for key, value in {'MEDIA_UID': '10001', 'MEDIA_GID': '10002',
