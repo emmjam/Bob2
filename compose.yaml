@@ -62,6 +62,11 @@ services:
       bind:
         create_host_path: false
     - type: bind
+      source: ${DOWNLOAD_ROOT:?Set DOWNLOAD_ROOT in a private .env}
+      target: /downloads
+      bind:
+        create_host_path: false
+    - type: bind
       source: ${TRANSMISSION_RESOLV_FILE:?Set absolute private resolver file path}
       target: /etc/resolv.conf
       read_only: true
