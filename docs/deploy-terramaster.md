@@ -73,7 +73,7 @@ Fill `.env` as described below and prepare directories/permissions yourself.
 | NAS_BIND_IP | Automatically set to `192.168.0.102`; no prompt |
 | SONARR_PORT / RADARR_PORT / PROWLARR_PORT / SEERR_PORT | Uses `8989` / `7878` / `9696` / `5055` automatically; prompts for an alternative only when unavailable |
 | NORDVPN_SERVICE_USER / NORDVPN_SERVICE_PASSWORD | Read automatically from `/home/ian/.nordvpn` on TNAS; no credential prompts |
-| NORDVPN_COUNTRIES | Automatically set to `Netherlands`; no prompt |
+| NORDVPN_COUNTRIES | Automatically set to `Netherlands,Belgium,Germany,Jersey,Isle of Man`; no prompt |
 | TRANSMISSION_USER / TRANSMISSION_PASSWORD | Username defaults to `ian`; supply a private downloader RPC password |
 | All six *_IMAGE variables | Automatically set to `latest` from the repositories listed in `.env.example`; no prompts |
 

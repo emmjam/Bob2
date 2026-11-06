@@ -235,7 +235,7 @@ class DeploymentTests(unittest.TestCase):
                 deploy.main()
                 commands.assert_not_called()
             self.assertTrue((destination / '.env').is_file())
-            self.assertIn("NORDVPN_COUNTRIES='Netherlands'", (destination / '.env').read_text())
+            self.assertIn("NORDVPN_COUNTRIES='Netherlands,Belgium,Germany,Jersey,Isle of Man'", (destination / '.env').read_text())
             self.assertIn("NAS_BIND_IP='192.168.0.102'", (destination / '.env').read_text())
             for key, repo in deploy.REPOS.items():
                 self.assertIn(f"{key}='{repo}:latest'", (destination / '.env').read_text())

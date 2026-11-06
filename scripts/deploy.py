@@ -417,7 +417,7 @@ def main():
     write_portal(destination / 'portal', values)
     values.update(vpn_credentials)
     print('NordVPN credentials loaded from /home/ian/.nordvpn.')
-    values['NORDVPN_COUNTRIES'] = 'Netherlands'
+    values['NORDVPN_COUNTRIES'] = 'Netherlands,Belgium,Germany,Jersey,Isle of Man'
     for key in ('TRANSMISSION_USER', 'TRANSMISSION_PASSWORD'):
         secret = key != 'NORDVPN_COUNTRIES'
         while True:
