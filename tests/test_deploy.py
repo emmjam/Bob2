@@ -115,6 +115,20 @@ class DeploymentTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 deploy.nordvpn_credentials(path)
 
+    def test_available_default_port_does_not_prompt(self):
+        used = set()
+        with patch.object(deploy.socket, 'socket'), patch.object(deploy, 'ask') as ask:
+            self.assertEqual(deploy.available_port('SONARR_PORT', '8989', '192.168.0.102', used), '8989')
+            ask.assert_not_called()
+        self.assertIn('8989', used)
+
+    def test_unavailable_port_prompts_for_alternative(self):
+        with patch.object(deploy.socket, 'socket') as socket, \
+                patch.object(deploy, 'ask', return_value='8990') as ask:
+            socket.return_value.__enter__.return_value.bind.side_effect = [OSError(), None]
+            self.assertEqual(deploy.available_port('SONARR_PORT', '8989', '192.168.0.102', set()), '8990')
+            ask.assert_called_once()
+
     def test_disjoint_paths(self):
         with self.assertRaises(ValueError):
             deploy.disjoint([Path('/data'), Path('/data/media')])

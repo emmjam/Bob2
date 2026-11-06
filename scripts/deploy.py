@@ -320,6 +320,21 @@ def nordvpn_credentials(path=Path('/home/ian/.nordvpn')):
     return credentials
 
 
+def available_port(key, default, address, used_ports):
+    value = default
+    while True:
+        if value not in used_ports:
+            try:
+                with socket.socket() as sock:
+                    sock.bind((address, int(value)))
+                used_ports.add(value)
+                return value
+            except OSError:
+                pass
+        print(f'{key}: port {value} unavailable on {address}.')
+        value = ask(key + ' alternative port', validate=port)
+
+
 def main():
     os.umask(0o077)
     repo = 'emmjam/Bob2'
@@ -371,21 +386,7 @@ def main():
     used_ports = set()
     for key, default in [('SONARR_PORT', '8989'), ('RADARR_PORT', '7878'),
                          ('PROWLARR_PORT', '9696'), ('SEERR_PORT', '5055')]:
-        while True:
-            value = ask(key, default, validate=port)
-            if value in used_ports:
-                print('Ports must be distinct.')
-                continue
-            # Bind only the user-selected address/port; does not inventory the host.
-            try:
-                with socket.socket() as sock:
-                    sock.bind((values['NAS_BIND_IP'], int(value)))
-            except OSError:
-                print('Cannot bind this address/port; choose a free port on this NAS.')
-                continue
-            values[key] = value
-            used_ports.add(value)
-            break
+        values[key] = available_port(key, default, values['NAS_BIND_IP'], used_ports)
     values.update(vpn_credentials)
     print('NordVPN credentials loaded from /home/ian/.nordvpn.')
     values['NORDVPN_COUNTRIES'] = 'Netherlands'

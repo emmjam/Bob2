@@ -70,7 +70,7 @@ Fill `.env` as described below and prepare directories/permissions yourself.
 | SEERR_UID / SEERR_GID | Automatically uses the same Plex UID `10001`, GID `10002`; no prompts |
 | TZ | `Europe/London` is the intended timezone |
 | NAS_BIND_IP | Automatically set to `192.168.0.102`; no prompt |
-| SONARR_PORT / RADARR_PORT / PROWLARR_PORT / SEERR_PORT | Suggested `8989` / `7878` / `9696` / `5055`; availability unverified |
+| SONARR_PORT / RADARR_PORT / PROWLARR_PORT / SEERR_PORT | Uses `8989` / `7878` / `9696` / `5055` automatically; prompts for an alternative only when unavailable |
 | NORDVPN_SERVICE_USER / NORDVPN_SERVICE_PASSWORD | Read automatically from `/home/ian/.nordvpn` on TNAS; no credential prompts |
 | NORDVPN_COUNTRIES | Automatically set to `Netherlands`; no prompt |
 | TRANSMISSION_USER / TRANSMISSION_PASSWORD | Choose private downloader RPC credentials |
