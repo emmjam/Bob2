@@ -14,10 +14,9 @@ Run the script using Python 3 as root; no extra Python packages are needed:
 python3 /path/to/deploy.py
 ```
 
-It asks for the GitHub repository (default `emmjam/Bob2`), branch/tag/commit
-(default `main`) and destination directory, then downloads the repository archive,
-creates the destination and extracts the deployment files. For a repeatable
-deployment, enter a full commit SHA instead of a moving branch. The destination is emptied first, preserving only the deploy script.
+It downloads directly from `emmjam/Bob2`, branch `main`, without repository or
+branch prompts. It asks only for the deployment destination before download.
+The destination is emptied first, preserving only the deploy script.
 This deletes previous `.env`, resolver files and appdata inside the destination.
 Use a dedicated Bob2 directory; media/downloads outside it are untouched.
 The downloaded archive is temporary and removed automatically. Private repositories

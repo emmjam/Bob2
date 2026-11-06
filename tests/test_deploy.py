@@ -143,8 +143,8 @@ class DeploymentTests(unittest.TestCase):
                     return str(archive)
                 if label.startswith('Absolute deployment'):
                     return str(destination)
-                if label == 'GitHub repository':
-                    return 'emmjam/Bob2'
+                if label in ('GitHub repository', 'Git branch, tag or commit'):
+                    self.fail('Repository and branch must be hard-coded')
                 key = label.split(':')[0].split(' ')[0]
                 if key in deploy.REPOS:
                     self.fail('Image defaults must not prompt the user')

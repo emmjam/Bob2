@@ -292,8 +292,8 @@ def access_as(path, uid, gid, flags):
 
 def main():
     os.umask(0o077)
-    repo = ask('GitHub repository', 'emmjam/Bob2', validate=repository)
-    ref = ask('Git branch, tag or commit', 'main')
+    repo = 'emmjam/Bob2'
+    ref = 'main'
     destination = Path(ask('Absolute deployment destination', '/Volume2/Bob2', validate=absolute))
     if os.geteuid() != 0:
         raise ValueError('Run this script as root on TNAS to prepare app-owned directories.')
