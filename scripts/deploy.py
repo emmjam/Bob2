@@ -367,7 +367,7 @@ def main():
     values.update(MEDIA_UID='10001', MEDIA_GID='10002',
                   SEERR_UID='10001', SEERR_GID='10002')
     values['TZ'] = ask('Timezone', 'Europe/London')
-    values['NAS_BIND_IP'] = ask('NAS LAN IPv4', validate=ipv4)
+    values['NAS_BIND_IP'] = '192.168.0.102'
     used_ports = set()
     for key, default in [('SONARR_PORT', '8989'), ('RADARR_PORT', '7878'),
                          ('PROWLARR_PORT', '9696'), ('SEERR_PORT', '5055')]:

@@ -69,7 +69,7 @@ Fill `.env` as described below and prepare directories/permissions yourself.
 | MEDIA_UID / MEDIA_GID | Automatically uses the existing Plex account: UID `10001`, GID `10002`; no prompts or new user |
 | SEERR_UID / SEERR_GID | Automatically uses the same Plex UID `10001`, GID `10002`; no prompts |
 | TZ | `Europe/London` is the intended timezone |
-| NAS_BIND_IP | Current trusted NAS IPv4; explicit address required |
+| NAS_BIND_IP | Automatically set to `192.168.0.102`; no prompt |
 | SONARR_PORT / RADARR_PORT / PROWLARR_PORT / SEERR_PORT | Suggested `8989` / `7878` / `9696` / `5055`; availability unverified |
 | NORDVPN_SERVICE_USER / NORDVPN_SERVICE_PASSWORD | Read automatically from `/home/ian/.nordvpn` on TNAS; no credential prompts |
 | NORDVPN_COUNTRIES | Automatically set to `Netherlands`; no prompt |

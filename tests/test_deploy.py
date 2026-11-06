@@ -169,7 +169,7 @@ class DeploymentTests(unittest.TestCase):
                 if key.endswith(('_UID', '_GID')):
                     self.fail('Plex account IDs must not prompt the user')
                 if key == 'NAS_BIND_IP':
-                    return '192.168.1.2'
+                    self.fail('NAS address must not prompt the user')
                 if 'PASSWORD' in key:
                     return 'private$password'
                 return default or 'test'
@@ -192,6 +192,7 @@ class DeploymentTests(unittest.TestCase):
                 commands.assert_not_called()
             self.assertTrue((destination / '.env').is_file())
             self.assertIn("NORDVPN_COUNTRIES='Netherlands'", (destination / '.env').read_text())
+            self.assertIn("NAS_BIND_IP='192.168.0.102'", (destination / '.env').read_text())
             for key, repo in deploy.REPOS.items():
                 self.assertIn(f"{key}='{repo}:latest'", (destination / '.env').read_text())
             for key, value in {'MEDIA_UID': '10001', 'MEDIA_GID': '10002',
