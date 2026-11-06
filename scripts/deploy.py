@@ -416,9 +416,6 @@ def main():
     for key in defaults:
         print(f'  {key}: {values[key]}')
     print('New directories will be created with the selected owners. Existing app config ownership stays unchanged; inaccessible pilot media directories get Plex ownership.')
-    if not yes('Write private config and prepare these directories?'):
-        print('Stopped after extraction; no configuration or app directories created.')
-        return
     private_write(destination / '.env', ''.join(f'{key}={dotenv(values[key])}\n' for key in keys))
     resolver = Path(values['TRANSMISSION_RESOLV_FILE'])
     private_write(resolver, (destination / 'config/transmission-resolv.conf.example').read_text())
