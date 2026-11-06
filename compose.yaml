@@ -1,4 +1,3 @@
-# UNVALIDATED on actual TerraMaster TOS version. Read docs/design.md and docs/acceptance.md.
 services:
   gluetun:
     restart: unless-stopped
