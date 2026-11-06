@@ -290,10 +290,13 @@ def access_as(path, uid, gid, flags):
     pid = os.fork()
     if pid == 0:
         try:
+            # Docker mounts this directory directly; host ancestors are not
+            # traversed by the app. Enter the mount source before dropping root.
+            os.chdir(path)
             os.setgroups([])
             os.setgid(gid)
             os.setuid(uid)
-            os._exit(0 if os.access(path, flags) else 1)
+            os._exit(0 if os.access('.', flags) else 1)
         except OSError:
             os._exit(1)
     return os.waitpid(pid, 0)[1] == 0

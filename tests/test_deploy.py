@@ -141,6 +141,23 @@ class DeploymentTests(unittest.TestCase):
                 chown.assert_called_once_with(path, 10001, 10002)
             self.assertEqual(child.read_text(), 'unchanged')
 
+    def test_access_checks_mount_source_without_host_parent_traversal(self):
+        from unittest.mock import Mock
+        calls = Mock()
+        with patch.object(os, 'fork', return_value=0), \
+                patch.object(os, 'chdir', calls.chdir), \
+                patch.object(os, 'setgroups', calls.setgroups), \
+                patch.object(os, 'setgid', calls.setgid), \
+                patch.object(os, 'setuid', calls.setuid), \
+                patch.object(os, 'access', return_value=True) as access, \
+                patch.object(os, '_exit', side_effect=SystemExit) as exit:
+            with self.assertRaises(SystemExit):
+                deploy.access_as(Path('/private/appdata/transmission'), 10001, 10002, os.W_OK)
+            self.assertEqual(calls.mock_calls[0].args, (Path('/private/appdata/transmission'),))
+            self.assertEqual(calls.mock_calls[0][0], 'chdir')
+            access.assert_called_once_with('.', os.W_OK)
+            exit.assert_called_once_with(0)
+
     def test_disjoint_paths(self):
         with self.assertRaises(ValueError):
             deploy.disjoint([Path('/data'), Path('/data/media')])
