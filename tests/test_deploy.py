@@ -78,6 +78,31 @@ class DeploymentTests(unittest.TestCase):
                 chown.assert_not_called()
             self.assertEqual(path.stat().st_mode, before.st_mode)
 
+    def test_empty_preserves_script_and_does_not_follow_links(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            dest = root / 'Bob2'
+            (dest / 'scripts').mkdir(parents=True)
+            script = dest / 'scripts/deploy.py'
+            script.write_text('keep')
+            (dest / '.env').write_text('remove')
+            (dest / 'appdata').mkdir()
+            (dest / 'appdata/state').write_text('remove')
+            outside = root / 'media'
+            outside.mkdir()
+            (outside / 'film').write_text('keep')
+            (dest / 'linked-media').symlink_to(outside, target_is_directory=True)
+            kept = deploy.empty_destination(dest, script)
+            self.assertEqual(kept, {script})
+            self.assertEqual(script.read_text(), 'keep')
+            self.assertFalse((dest / '.env').exists())
+            self.assertFalse((dest / 'appdata').exists())
+            self.assertEqual((outside / 'film').read_text(), 'keep')
+
+    def test_cannot_clear_media_root(self):
+        with self.assertRaises(ValueError):
+            deploy.empty_destination(Path('/Volume1/SHARED/Movies'))
+
     def test_disjoint_paths(self):
         with self.assertRaises(ValueError):
             deploy.disjoint([Path('/data'), Path('/data/media')])

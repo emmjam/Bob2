@@ -17,9 +17,9 @@ python3 /path/to/deploy.py
 It asks for the GitHub repository (default `emmjam/Bob2`), branch/tag/commit
 (default `main`) and destination directory, then downloads the repository archive,
 creates the destination and extracts the deployment files. For a repeatable
-deployment, enter a full commit SHA instead of a moving branch. Choose a fresh destination, for
-example `/Volume2/Bob2-pilot`: it refuses to overwrite an existing installation,
-including the previously extracted `/Volume2/Bob2`. Leave that directory intact.
+deployment, enter a full commit SHA instead of a moving branch. The destination is emptied first, preserving only the deploy script.
+This deletes previous `.env`, resolver files and appdata inside the destination.
+Use a dedicated Bob2 directory; media/downloads outside it are untouched.
 The downloaded archive is temporary and removed automatically. Private repositories
 require a GitHub token with Contents read access: supply GH_TOKEN/GITHUB_TOKEN in
 the process environment or use the hidden prompt after an access-denied response.
@@ -38,8 +38,8 @@ The script checks the supplied ports by briefly binding them without listening;
 it does not inspect storage, Docker or Plex, or change Plex libraries. It never
 runs Docker, starts containers or deploys the project. **TOS handles startup.**
 Configuration files/directories already created remain on failure or cancellation;
-no automated rollback or deletion occurs. Use a new destination if restarting the
-whole wizard; existing external media/download directories will be preserved.
+no rollback occurs after the initial destination cleanup. Restarting the wizard clears the destination again; existing external media/download
+directories are preserved.
 
 Use the current repository version with this script. Older DATA_ROOT-based bundles
 are rejected. Secrets containing backslashes are rejected rather than relying on

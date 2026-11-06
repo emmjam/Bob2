@@ -122,7 +122,44 @@ def download_bundle(repo, ref, destination):
             raise ValueError('Could not download from GitHub; check TNAS network/TLS access.') from None
 
 
-def extract(bundle, destination, github=False):
+def empty_destination(destination, script=None):
+    destination = absolute(str(destination))
+    protected = {Path('/Volume1/SHARED'), Path('/Volume1/SHARED/Movies'),
+                 Path('/Volume1/SHARED/Music'), Path('/Volume1/SHARED/Movies/bobFilms'),
+                 Path('/Volume1/SHARED/Movies/bobTV')}
+    if len(destination.parts) < 3 or destination in protected or destination.is_mount():
+        raise ValueError('Choose a dedicated project directory, not a volume or media folder.')
+    if not destination.exists():
+        mkdirs(destination)
+        return set()
+    if not destination.is_dir():
+        raise ValueError('Destination must be a directory.')
+    preserved = set()
+    for candidate in (script or Path(__file__).resolve(), destination / 'deploy.py'):
+        if candidate.is_file() and not candidate.is_symlink() and destination in candidate.parents:
+            preserved.add(candidate)
+    # Refuse nested mounts before deleting anything; never traverse symlink targets.
+    for base, directories, _ in os.walk(destination, followlinks=False):
+        for name in directories:
+            path = Path(base) / name
+            if not path.is_symlink() and path.is_mount():
+                raise ValueError(f'Refusing to clear a destination containing a mount: {path}')
+
+    def clear(folder):
+        for child in folder.iterdir():
+            if child in preserved:
+                continue
+            if child.is_symlink() or not child.is_dir():
+                child.unlink()
+            elif any(child in kept.parents for kept in preserved):
+                clear(child)
+            else:
+                shutil.rmtree(child)
+    clear(destination)
+    return preserved
+
+
+def extract(bundle, destination, github=False, preserved=()):
     """Validate entire archive before writing; reject links, devices and traversal."""
     destination = absolute(str(destination))
     allowed = {'compose.yaml', '.env.example', '.gitignore', 'README.md',
@@ -160,6 +197,8 @@ def extract(bundle, destination, github=False):
                 raise ValueError('Bundle exceeds the 20 MiB deployment-file limit.')
             target = destination.joinpath(*path.parts)
             absolute(str(target))
+            if target in preserved and member.isfile():
+                continue
             if target.exists() and not (target.is_dir() and member.isdir()):
                 raise ValueError(f'Refusing to overwrite {target}; choose a new destination.')
         for required in ('compose.yaml', '.env.example', 'config/transmission-resolv.conf.example'):
@@ -170,6 +209,8 @@ def extract(bundle, destination, github=False):
         mkdirs(destination)
         for member in members:
             target = destination / member.name
+            if target in preserved:
+                continue
             if member.isdir():
                 mkdirs(target)
             else:
@@ -256,12 +297,14 @@ def main():
     destination = Path(ask('Absolute deployment destination', '/Volume2/Bob2', validate=absolute))
     if os.geteuid() != 0:
         raise ValueError('Run this script as root on TNAS to prepare app-owned directories.')
+    print(f'Clearing {destination}, preserving the deploy script only (including .env and appdata removal).')
+    preserved = empty_destination(destination)
     with tempfile.TemporaryDirectory(prefix='bob2-download-') as temporary:
         bundle = Path(temporary) / 'bundle.tar.gz'
         print(f'Downloading {repo} at {ref} from GitHub...')
         download_bundle(repo, ref, bundle)
-        extract(bundle, destination, github=True)
-    print(f'Extracted to {destination}. Existing files are never overwritten.')
+        extract(bundle, destination, github=True, preserved=preserved)
+    print(f'Extracted to {destination}. Destination cleared; deploy script preserved.')
     print('Enter settings below. No NAS inventory or Plex changes will be performed.')
     values = {}
     template = (destination / '.env.example').read_text()
