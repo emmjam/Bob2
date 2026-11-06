@@ -63,7 +63,7 @@ Fill `.env` as described below and prepare directories/permissions yourself.
 |---|---|
 | FILMS_ROOT | Already set: `/Volume1/SHARED/Movies/bobFilms` |
 | TV_ROOT | Already set: `/Volume1/SHARED/Movies/bobTV` |
-| DOWNLOAD_ROOT | Choose a dedicated absolute directory, e.g. `/Volume1/SHARED/bobDownloads`; not created or approved yet |
+| DOWNLOAD_ROOT | Defaults to `/Volume1/SHARED/Movies/bobDownloads`; created by the preparation script if missing |
 | CONFIG_ROOT | Choose a private, persistent absolute directory outside downloads/libraries; not selected yet |
 | TRANSMISSION_RESOLV_FILE | Absolute filename of the private resolver copy above |
 | MEDIA_UID / MEDIA_GID | Automatically uses the existing Plex account: UID `10001`, GID `10002`; no prompts or new user |

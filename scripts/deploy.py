@@ -352,7 +352,7 @@ def main():
     values.update({key: repo + ':latest' for key, repo in REPOS.items()})
     defaults = {
         'CONFIG_ROOT': str(destination / 'appdata'),
-        'DOWNLOAD_ROOT': '/Volume1/SHARED/bobDownloads',
+        'DOWNLOAD_ROOT': '/Volume1/SHARED/Movies/bobDownloads',
         'FILMS_ROOT': '/Volume1/SHARED/Movies/bobFilms',
         'TV_ROOT': '/Volume1/SHARED/Movies/bobTV',
     }
