@@ -163,7 +163,7 @@ def extract(bundle, destination, github=False, preserved=()):
     """Validate entire archive before writing; reject links, devices and traversal."""
     destination = absolute(str(destination))
     allowed = {'compose.yaml', '.env.example', '.gitignore', 'README.md',
-               'TASK-CONTINUATION-BOB2.md', 'config', 'docs', 'scripts', 'tests'}
+               'TASK-CONTINUATION-BOB2.md', 'config', 'docs', 'scripts', 'tests', 'portal'}
     with tarfile.open(bundle, 'r:gz') as archive:
         members = archive.getmembers()
         if github:
@@ -347,6 +347,18 @@ def available_port(key, default, address, used_ports):
         value = ask(key + ' alternative port', validate=port)
 
 
+def write_portal(folder, values):
+    page = folder / 'index.html'
+    text = page.read_text()
+    for app, default in [('SONARR', '8989'), ('RADARR', '7878'),
+                         ('PROWLARR', '9696'), ('SEERR', '5055')]:
+        text = text.replace('192.168.0.102:' + default,
+                            values['NAS_BIND_IP'] + ':' + values[app + '_PORT'])
+    page.write_text(text)
+    folder.chmod(0o755)
+    page.chmod(0o644)
+
+
 def main():
     os.umask(0o077)
     repo = 'emmjam/Bob2'
@@ -371,7 +383,7 @@ def main():
     if set(keys) != set(REPOS) | {
         'CONFIG_ROOT', 'DOWNLOAD_ROOT', 'FILMS_ROOT', 'TV_ROOT', 'MEDIA_UID',
         'MEDIA_GID', 'SEERR_UID', 'SEERR_GID', 'TZ', 'NAS_BIND_IP', 'SEERR_PORT',
-        'SONARR_PORT', 'RADARR_PORT', 'PROWLARR_PORT', 'NORDVPN_SERVICE_USER',
+        'SONARR_PORT', 'RADARR_PORT', 'PROWLARR_PORT', 'PORTAL_PORT', 'NORDVPN_SERVICE_USER',
         'NORDVPN_SERVICE_PASSWORD', 'NORDVPN_COUNTRIES', 'TRANSMISSION_USER',
         'TRANSMISSION_PASSWORD', 'TRANSMISSION_RESOLV_FILE',
     }:
@@ -397,8 +409,9 @@ def main():
     values['NAS_BIND_IP'] = '192.168.0.102'
     used_ports = set()
     for key, default in [('SONARR_PORT', '8989'), ('RADARR_PORT', '7878'),
-                         ('PROWLARR_PORT', '9696'), ('SEERR_PORT', '5055')]:
+                         ('PROWLARR_PORT', '9696'), ('SEERR_PORT', '5055'), ('PORTAL_PORT', '8088')]:
         values[key] = available_port(key, default, values['NAS_BIND_IP'], used_ports)
+    write_portal(destination / 'portal', values)
     values.update(vpn_credentials)
     print('NordVPN credentials loaded from /home/ian/.nordvpn.')
     values['NORDVPN_COUNTRIES'] = 'Netherlands'
@@ -458,6 +471,7 @@ def main():
     print('Load .env through the TOS project environment settings if it is not loaded automatically.')
     print('Keep Transmission behind Gluetun. Test VPN/DNS/IPv6 isolation before submitting downloads.')
     print('After TOS starts the apps, configure authentication, API keys, indexers and Plex in their UIs.')
+    print(f'BOB2 HOME: http://{values["NAS_BIND_IP"]}:{values["PORTAL_PORT"]}')
     for name in ('SONARR', 'RADARR', 'PROWLARR', 'SEERR'):
         print(f'{name}: http://{values["NAS_BIND_IP"]}:{values[name + "_PORT"]}')
     print('Sonarr root: /data/media/tv; Radarr root: /data/media/movies; downloader: gluetun:9091.')

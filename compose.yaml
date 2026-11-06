@@ -205,6 +205,20 @@ services:
       timeout: 5s
       retries: 3
       start_period: 60s
+  portal:
+    image: nginx:alpine
+    restart: unless-stopped
+    networks: *media_network
+    logging: *logging
+    ports:
+    - ${NAS_BIND_IP:?Set NAS_BIND_IP in a private .env}:${PORTAL_PORT:?Set PORTAL_PORT in a private .env}:80
+    volumes:
+    - type: bind
+      source: ./portal
+      target: /usr/share/nginx/html
+      read_only: true
+      bind:
+        create_host_path: false
 networks:
   media:
     driver: bridge

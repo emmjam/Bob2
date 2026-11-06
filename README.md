@@ -14,6 +14,7 @@ Rufus is no longer the intended coordinator. OpenClaw on TOS is an independent
 investigation, with no dependency here. Bob2 requires neither compute host
 (`hp`/`hp.lan`, `dell`/`dell.lan`).
 
+- [Bob2 home page](portal/index.html): links to all apps; served on port 8088 by the portal service.
 - [Interactive preparation script](scripts/deploy.py): downloads from GitHub and prompts for the destination and settings; TOS handles startup.
 - [TerraMaster deployment bundle](docs/deploy-terramaster.md): files, required values and pilot setup.
 - [Design and upstream sources](docs/design.md): dependencies, paths, permissions,

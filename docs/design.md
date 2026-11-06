@@ -47,7 +47,7 @@ resolve existing files/quality, and verify duplicate requests in acceptance.
 
 ## Compose and configuration contract
 
-[Compose](../compose.yaml) contains six services. [.env.example](../.env.example)
+[Compose](../compose.yaml) contains the six media/VPN services plus a static nginx portal on port 8088. [.env.example](../.env.example)
 contains blank required inputs; it intentionally cannot run unchanged. Image
 repositories are documented there. The wizard automatically uses `latest` without image prompts.
 Specific tags/digests can be set manually in the generated .env if needed. No Plex,

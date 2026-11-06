@@ -18,6 +18,7 @@ class DeploymentTests(unittest.TestCase):
         archive = root / 'bundle.tar.gz'
         with tarfile.open(archive, 'w:gz') as out:
             for name, body in [('compose.yaml', 'services: {}'), ('.env.example', (Path(__file__).parents[1] / '.env.example').read_text()),
+                               ('portal/index.html', (Path(__file__).parents[1] / 'portal/index.html').read_text()),
                                ('config/transmission-resolv.conf.example', 'nameserver 127.0.0.1')]:
                 data = body.encode()
                 entry = tarfile.TarInfo(name)

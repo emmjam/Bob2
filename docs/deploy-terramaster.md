@@ -130,3 +130,17 @@ NordVPN credentials are loaded before destination cleanup from
 `USERNAME=...` / `PASSWORD=...` assignments (optionally quoted), or an OpenVPN
 credentials file with username on line one and password on line two. Values are
 not executed or printed. Missing/invalid files stop preparation before cleanup.
+
+## Bob2 home page
+
+The `portal` service serves [the index page](../portal/index.html) at
+`http://192.168.0.102:8088`. It links to Sonarr, Radarr, Prowlarr, Seerr and
+Transmission. The wizard automatically adjusts app links if it selects alternative
+ports; PORTAL_PORT defaults to 8088 and only prompts if unavailable.
+
+For an existing installation, do not rerun the wizard: it clears appdata. Copy
+`portal/index.html` into a `portal` directory beside the deployed compose.yaml,
+add the new portal service from compose.yaml, add `PORTAL_PORT=8088` to the private
+.env (or TOS project variables), and update the project through TOS. Preserve all
+existing private configuration and app settings. The portal mounts only its static
+page directory read-only, with no media or application configuration access.

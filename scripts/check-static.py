@@ -8,7 +8,7 @@ root = Path(__file__).resolve().parents[1]
 raw = (root / 'compose.yaml').read_text()
 c = yaml.safe_load(raw)
 s = c['services']
-assert set(s) == {'seerr', 'sonarr', 'radarr', 'prowlarr', 'transmission', 'gluetun'}
+assert set(s) == {'seerr', 'sonarr', 'radarr', 'prowlarr', 'transmission', 'gluetun', 'portal'}
 t = s['transmission']
 assert t['network_mode'] == 'service:gluetun'
 assert not any(k in t for k in ('ports', 'networks', 'dns', 'cap_add'))
@@ -23,7 +23,10 @@ assert g['sysctls']['net.ipv6.conf.all.disable_ipv6'] == '1'
 assert not c['networks']['media']['enable_ipv6']
 assert s['seerr']['environment']['DB_TYPE'] == 'sqlite'
 for name, service in s.items():
-    assert '${' in service['image'] and ':?' in service['image']
+    if name == 'portal':
+        assert service['image'] == 'nginx:alpine'
+    else:
+        assert '${' in service['image'] and ':?' in service['image']
     assert service.get('network_mode') != 'host'
     assert not service.get('privileged')
     for mount in service.get('volumes', []):
@@ -60,5 +63,5 @@ for path in root.rglob('*'):
             for target in re.findall(r'\]\(([^)]+)\)', content):
                 if not target.startswith(('https://', 'http://', '#')):
                     assert (path.parent / target.split('#')[0]).exists(), (path, target)
-print('PASS: six-service structure, VPN boundary, binds, required parameters and isolated pilot mounts, exclusions, links and whitespace.')
+print('PASS: seven-service structure, VPN boundary, binds, required parameters and isolated pilot mounts, exclusions, links and whitespace.')
 print('Static checks only: no Compose CLI, images, TOS or runtime acceptance.')
