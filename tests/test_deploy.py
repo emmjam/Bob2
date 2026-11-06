@@ -78,12 +78,6 @@ class DeploymentTests(unittest.TestCase):
                 chown.assert_not_called()
             self.assertEqual(path.stat().st_mode, before.st_mode)
 
-    def test_latest_image_default_is_accepted(self):
-        deploy.image('qmcgaw/gluetun:latest')
-        with patch('builtins.input', return_value=''):
-            self.assertEqual(deploy.ask('GLUETUN_IMAGE', 'qmcgaw/gluetun:latest', validate=deploy.image),
-                             'qmcgaw/gluetun:latest')
-
     def test_disjoint_paths(self):
         with self.assertRaises(ValueError):
             deploy.disjoint([Path('/data'), Path('/data/media')])
@@ -128,7 +122,7 @@ class DeploymentTests(unittest.TestCase):
                     return 'emmjam/Bob2'
                 key = label.split(':')[0].split(' ')[0]
                 if key in deploy.REPOS:
-                    return deploy.REPOS[key] + ':1.2.3'
+                    self.fail('Image defaults must not prompt the user')
                 if key == 'CONFIG_ROOT':
                     return str(destination / 'appdata')
                 if key in ('DOWNLOAD_ROOT', 'FILMS_ROOT', 'TV_ROOT'):
@@ -156,6 +150,8 @@ class DeploymentTests(unittest.TestCase):
                 deploy.main()
                 commands.assert_not_called()
             self.assertTrue((destination / '.env').is_file())
+            for key, repo in deploy.REPOS.items():
+                self.assertIn(f"{key}='{repo}:latest'", (destination / '.env').read_text())
             self.assertTrue((destination / 'appdata/sonarr').is_dir())
             self.assertEqual((destination / 'appdata/sonarr').stat().st_mode & 0o777, 0o700)
             self.assertNotIn('private$password', output.getvalue())

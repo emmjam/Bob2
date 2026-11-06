@@ -275,13 +275,7 @@ def main():
         'TRANSMISSION_PASSWORD', 'TRANSMISSION_RESOLV_FILE',
     }:
         raise ValueError('Unsupported bundle environment schema; update the deployer.')
-    for key, repo in REPOS.items():
-        while True:
-            value = ask(key, repo + ':latest', validate=image)
-            if value.startswith(repo + ':') or value.startswith(repo + '@sha256:'):
-                values[key] = value
-                break
-            print(f'Use the expected repository: {repo}')
+    values.update({key: repo + ':latest' for key, repo in REPOS.items()})
     defaults = {
         'CONFIG_ROOT': str(destination / 'appdata'),
         'DOWNLOAD_ROOT': '/Volume1/SHARED/bobDownloads',

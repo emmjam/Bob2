@@ -49,8 +49,8 @@ resolve existing files/quality, and verify duplicate requests in acceptance.
 
 [Compose](../compose.yaml) contains six services. [.env.example](../.env.example)
 contains blank required inputs; it intentionally cannot run unchanged. Image
-repositories are documented there. The wizard defaults to `latest` for a simple
-first setup; specific tags/digests can be entered instead. No Plex,
+repositories are documented there. The wizard automatically uses `latest` without image prompts.
+Specific tags/digests can be set manually in the generated .env if needed. No Plex,
 reverse proxy, Redis, worker or OpenClaw containers are added.
 
 Use a specific trusted NAS address for published Seerr/administration ports, with
