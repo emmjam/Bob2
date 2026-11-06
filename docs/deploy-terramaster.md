@@ -144,3 +144,15 @@ add the new portal service from compose.yaml, add `PORTAL_PORT=8088` to the priv
 .env (or TOS project variables), and update the project through TOS. Preserve all
 existing private configuration and app settings. The portal mounts only its static
 page directory read-only, with no media or application configuration access.
+
+## Bazarr
+
+Bazarr uses the Plex UID/GID, its own appdata/bazarr config directory, and only
+the two pilot libraries at their existing container paths. Default URL:
+`http://192.168.0.102:6767`. The wizard fills BAZARR_IMAGE with
+`lscr.io/linuxserver/bazarr:latest` and uses port 6767 unless unavailable.
+After TOS builds/starts it, enable authentication and connect Sonarr at
+`http://sonarr:8989` and Radarr at `http://radarr:7878` with their API keys.
+No path mappings are needed. Select subtitle languages and providers, and save
+subtitles alongside media. Provider credentials and language policy remain user
+settings. Existing installations must add Bazarr without rerunning the deployer.

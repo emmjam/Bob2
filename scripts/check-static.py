@@ -8,7 +8,7 @@ root = Path(__file__).resolve().parents[1]
 raw = (root / 'compose.yaml').read_text()
 c = yaml.safe_load(raw)
 s = c['services']
-assert set(s) == {'seerr', 'sonarr', 'radarr', 'prowlarr', 'transmission', 'gluetun', 'portal'}
+assert set(s) == {'seerr', 'sonarr', 'radarr', 'prowlarr', 'transmission', 'gluetun', 'portal', 'bazarr'}
 t = s['transmission']
 assert t['network_mode'] == 'service:gluetun'
 assert not any(k in t for k in ('ports', 'networks', 'dns', 'cap_add'))
@@ -63,5 +63,8 @@ for path in root.rglob('*'):
             for target in re.findall(r'\]\(([^)]+)\)', content):
                 if not target.startswith(('https://', 'http://', '#')):
                     assert (path.parent / target.split('#')[0]).exists(), (path, target)
-print('PASS: seven-service structure, VPN boundary, binds, required parameters and isolated pilot mounts, exclusions, links and whitespace.')
+print('PASS: eight-service structure, VPN boundary, binds, required parameters and isolated pilot mounts, exclusions, links and whitespace.')
 print('Static checks only: no Compose CLI, images, TOS or runtime acceptance.')
+
+assert {m['target'] for m in s['bazarr']['volumes']} == {'/config', '/data/media/tv', '/data/media/movies'}
+assert s['bazarr']['environment']['PUID'] == s['sonarr']['environment']['PUID']

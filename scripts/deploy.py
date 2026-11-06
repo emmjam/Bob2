@@ -16,8 +16,9 @@ import urllib.parse
 import urllib.request
 
 
-SERVICES = ('gluetun', 'transmission', 'sonarr', 'radarr', 'prowlarr', 'seerr')
+SERVICES = ('gluetun', 'transmission', 'sonarr', 'radarr', 'prowlarr', 'seerr', 'bazarr')
 REPOS = {
+    'BAZARR_IMAGE': 'lscr.io/linuxserver/bazarr',
     'GLUETUN_IMAGE': 'qmcgaw/gluetun',
     'TRANSMISSION_IMAGE': 'lscr.io/linuxserver/transmission',
     'SONARR_IMAGE': 'lscr.io/linuxserver/sonarr',
@@ -351,7 +352,7 @@ def write_portal(folder, values):
     page = folder / 'index.html'
     text = page.read_text()
     for app, default in [('SONARR', '8989'), ('RADARR', '7878'),
-                         ('PROWLARR', '9696'), ('SEERR', '5055')]:
+                         ('PROWLARR', '9696'), ('SEERR', '5055'), ('BAZARR', '6767')]:
         text = text.replace('192.168.0.102:' + default,
                             values['NAS_BIND_IP'] + ':' + values[app + '_PORT'])
     page.write_text(text)
@@ -386,7 +387,7 @@ def main():
     if set(keys) != set(REPOS) | {
         'CONFIG_ROOT', 'DOWNLOAD_ROOT', 'FILMS_ROOT', 'TV_ROOT', 'MEDIA_UID',
         'MEDIA_GID', 'SEERR_UID', 'SEERR_GID', 'TZ', 'NAS_BIND_IP', 'SEERR_PORT',
-        'SONARR_PORT', 'RADARR_PORT', 'PROWLARR_PORT', 'PORTAL_PORT', 'NORDVPN_SERVICE_USER',
+        'SONARR_PORT', 'RADARR_PORT', 'PROWLARR_PORT', 'BAZARR_PORT', 'PORTAL_PORT', 'NORDVPN_SERVICE_USER',
         'NORDVPN_SERVICE_PASSWORD', 'NORDVPN_COUNTRIES', 'TRANSMISSION_USER',
         'TRANSMISSION_PASSWORD', 'TRANSMISSION_RESOLV_FILE',
     }:
@@ -412,7 +413,7 @@ def main():
     values['NAS_BIND_IP'] = '192.168.0.102'
     used_ports = set()
     for key, default in [('SONARR_PORT', '8989'), ('RADARR_PORT', '7878'),
-                         ('PROWLARR_PORT', '9696'), ('SEERR_PORT', '5055'), ('PORTAL_PORT', '8088')]:
+                         ('PROWLARR_PORT', '9696'), ('SEERR_PORT', '5055'), ('BAZARR_PORT', '6767'), ('PORTAL_PORT', '8088')]:
         values[key] = available_port(key, default, values['NAS_BIND_IP'], used_ports)
     write_portal(destination / 'portal', values)
     values.update(vpn_credentials)
@@ -475,7 +476,7 @@ def main():
     print('Keep Transmission behind Gluetun. Test VPN/DNS/IPv6 isolation before submitting downloads.')
     print('After TOS starts the apps, configure authentication, API keys, indexers and Plex in their UIs.')
     print(f'BOB2 HOME: http://{values["NAS_BIND_IP"]}:{values["PORTAL_PORT"]}')
-    for name in ('SONARR', 'RADARR', 'PROWLARR', 'SEERR'):
+    for name in ('SONARR', 'RADARR', 'PROWLARR', 'SEERR', 'BAZARR'):
         print(f'{name}: http://{values["NAS_BIND_IP"]}:{values[name + "_PORT"]}')
     print('Sonarr root: /data/media/tv; Radarr root: /data/media/movies; downloader: gluetun:9091.')
     print('See docs/deploy-terramaster.md. Plex and existing media have not been changed.')

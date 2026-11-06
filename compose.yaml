@@ -209,6 +209,34 @@ services:
       timeout: 5s
       retries: 3
       start_period: 60s
+  bazarr:
+    image: ${BAZARR_IMAGE:?Set BAZARR_IMAGE in a private .env}
+    restart: unless-stopped
+    networks: *media_network
+    logging: *logging
+    environment:
+      PUID: ${MEDIA_UID:?Set MEDIA_UID in a private .env}
+      PGID: ${MEDIA_GID:?Set MEDIA_GID in a private .env}
+      TZ: ${TZ:?Set TZ in a private .env}
+      UMASK: '002'
+    ports:
+    - ${NAS_BIND_IP:?Set NAS_BIND_IP in a private .env}:${BAZARR_PORT:?Set BAZARR_PORT in a private .env}:6767
+    volumes:
+    - type: bind
+      source: ${CONFIG_ROOT:?Set CONFIG_ROOT in a private .env}/bazarr
+      target: /config
+      bind:
+        create_host_path: false
+    - type: bind
+      source: ${TV_ROOT:?Set TV_ROOT in a private .env}
+      target: /data/media/tv
+      bind:
+        create_host_path: false
+    - type: bind
+      source: ${FILMS_ROOT:?Set FILMS_ROOT in a private .env}
+      target: /data/media/movies
+      bind:
+        create_host_path: false
   portal:
     image: nginx:alpine
     restart: unless-stopped
