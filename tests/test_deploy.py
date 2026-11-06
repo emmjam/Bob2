@@ -103,6 +103,18 @@ class DeploymentTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             deploy.empty_destination(Path('/Volume1/SHARED/Movies'))
 
+    def test_nordvpn_file_formats(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / '.nordvpn'
+            for text in ('USERNAME=test\nPASSWORD=pass$word\n', 'test\npass$word\n',
+                         "export USERNAME=\"test\"\nPASSWORD='pass$word'\n"):
+                path.write_text(text)
+                self.assertEqual(deploy.nordvpn_credentials(path), {
+                    'NORDVPN_SERVICE_USER': 'test', 'NORDVPN_SERVICE_PASSWORD': 'pass$word'})
+            path.write_text('USERNAME=test\n')
+            with self.assertRaises(ValueError):
+                deploy.nordvpn_credentials(path)
+
     def test_disjoint_paths(self):
         with self.assertRaises(ValueError):
             deploy.disjoint([Path('/data'), Path('/data/media')])
@@ -162,7 +174,9 @@ class DeploymentTests(unittest.TestCase):
 
             original_extract = deploy.extract
             output = io.StringIO()
-            with patch.object(deploy, 'download_bundle'), \
+            with patch.object(deploy, 'nordvpn_credentials', return_value={
+                    'NORDVPN_SERVICE_USER': 'test', 'NORDVPN_SERVICE_PASSWORD': 'private$password'}), \
+                    patch.object(deploy, 'download_bundle'), \
                     patch.object(deploy, 'extract', side_effect=lambda bundle, dest, **kw: original_extract(archive, dest)), \
                     patch.object(deploy, 'ask', side_effect=answer), \
                     patch.object(os, 'geteuid', return_value=0), \

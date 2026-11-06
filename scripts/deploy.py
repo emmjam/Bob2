@@ -290,6 +290,36 @@ def access_as(path, uid, gid, flags):
     return os.waitpid(pid, 0)[1] == 0
 
 
+def nordvpn_credentials(path=Path('/home/ian/.nordvpn')):
+    try:
+        lines = [line.strip() for line in path.read_text().splitlines()
+                 if line.strip() and not line.lstrip().startswith('#')]
+    except OSError:
+        raise ValueError(f'Cannot read NordVPN credentials from {path}. Place the credentials file there on TNAS.') from None
+    aliases = {'USERNAME': 'NORDVPN_SERVICE_USER', 'USER': 'NORDVPN_SERVICE_USER',
+               'PASSWORD': 'NORDVPN_SERVICE_PASSWORD', 'PASS': 'NORDVPN_SERVICE_PASSWORD',
+               'OPENVPN_USER': 'NORDVPN_SERVICE_USER', 'OPENVPN_PASSWORD': 'NORDVPN_SERVICE_PASSWORD',
+               'NORDVPN_SERVICE_USER': 'NORDVPN_SERVICE_USER',
+               'NORDVPN_SERVICE_PASSWORD': 'NORDVPN_SERVICE_PASSWORD'}
+    credentials = {}
+    for line in lines:
+        key, separator, value = (line[7:] if line.startswith('export ') else line).partition('=')
+        if separator and key.strip() in aliases:
+            value = value.strip()
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
+                value = value[1:-1]
+            credentials[aliases[key.strip()]] = value
+    if not credentials and len(lines) == 2:
+        credentials = dict(zip(('NORDVPN_SERVICE_USER', 'NORDVPN_SERVICE_PASSWORD'), lines))
+    if set(credentials) != {'NORDVPN_SERVICE_USER', 'NORDVPN_SERVICE_PASSWORD'} or not all(credentials.values()):
+        raise ValueError('NordVPN file must contain USERNAME/PASSWORD assignments or two lines: username then password.')
+    for value in credentials.values():
+        if any(c in value for c in '\r\n\x00'):
+            raise ValueError('Invalid multiline NordVPN credentials.')
+        dotenv(value)
+    return credentials
+
+
 def main():
     os.umask(0o077)
     repo = 'emmjam/Bob2'
@@ -297,6 +327,7 @@ def main():
     destination = Path(ask('Absolute deployment destination', '/Volume2/Bob2', validate=absolute))
     if os.geteuid() != 0:
         raise ValueError('Run this script as root on TNAS to prepare app-owned directories.')
+    vpn_credentials = nordvpn_credentials()
     print(f'Clearing {destination}, preserving the deploy script only (including .env and appdata removal).')
     preserved = empty_destination(destination)
     with tempfile.TemporaryDirectory(prefix='bob2-download-') as temporary:
@@ -355,8 +386,9 @@ def main():
             values[key] = value
             used_ports.add(value)
             break
-    for key in ('NORDVPN_SERVICE_USER', 'NORDVPN_SERVICE_PASSWORD',
-                'NORDVPN_COUNTRIES', 'TRANSMISSION_USER', 'TRANSMISSION_PASSWORD'):
+    values.update(vpn_credentials)
+    print('NordVPN credentials loaded from /home/ian/.nordvpn.')
+    for key in ('NORDVPN_COUNTRIES', 'TRANSMISSION_USER', 'TRANSMISSION_PASSWORD'):
         secret = key != 'NORDVPN_COUNTRIES'
         while True:
             value = ask(key + (' (Nord service credentials, not account login)'

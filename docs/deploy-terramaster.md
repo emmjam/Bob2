@@ -71,7 +71,7 @@ Fill `.env` as described below and prepare directories/permissions yourself.
 | TZ | `Europe/London` is the intended timezone |
 | NAS_BIND_IP | Current trusted NAS IPv4; explicit address required |
 | SONARR_PORT / RADARR_PORT / PROWLARR_PORT / SEERR_PORT | Suggested `8989` / `7878` / `9696` / `5055`; availability unverified |
-| NORDVPN_SERVICE_USER / NORDVPN_SERVICE_PASSWORD | Nord OpenVPN service credentials, not account login |
+| NORDVPN_SERVICE_USER / NORDVPN_SERVICE_PASSWORD | Read automatically from `/home/ian/.nordvpn` on TNAS; no credential prompts |
 | NORDVPN_COUNTRIES | Your chosen supported country policy |
 | TRANSMISSION_USER / TRANSMISSION_PASSWORD | Choose private downloader RPC credentials |
 | All six *_IMAGE variables | Automatically set to `latest` from the repositories listed in `.env.example`; no prompts |
@@ -122,3 +122,9 @@ Plex library creation commands were supplied earlier; execution is unconfirmed.
 Do not duplicate an existing library. Test one permitted film and TV episode,
 including import and Plex playback. Existing libraries remain untouched until the
 user accepts Bob2. Nothing in this bundle changes Plex configuration automatically.
+
+NordVPN credentials are loaded before destination cleanup from
+`/home/ian/.nordvpn` on TNAS, never from Git. Supported formats are
+`USERNAME=...` / `PASSWORD=...` assignments (optionally quoted), or an OpenVPN
+credentials file with username on line one and password on line two. Values are
+not executed or printed. Missing/invalid files stop preparation before cleanup.
