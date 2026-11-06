@@ -11,13 +11,14 @@ p{color:#a9bacb;margin-bottom:32px}nav{display:grid;grid-template-columns:repeat
 a{display:block;padding:24px;background:#1a2937;border:1px solid #35495b;border-radius:12px;color:inherit;text-decoration:none}
 a:hover,a:focus-visible{border-color:#65d6ba;background:#203746;outline:2px solid #65d6ba;outline-offset:3px}
 strong{display:block;font-size:23px;margin-bottom:8px}span{display:block;color:#afc2d3;font-size:14px;line-height:1.6}
+.featured{grid-column:1/-1;background:#173d38;border:2px solid #65d6ba}.featured strong{color:#83f3d4;font-size:28px}
 footer{margin-top:32px;color:#a9bacb;font-size:14px}
 </style>
 </head>
 <body>
 <h1>Bob2</h1><p>Your media apps, in one place.</p>
 <nav aria-label="Media applications">
-<a href="http://192.168.0.102:5055"><strong>Seerr</strong><span>Browse films and TV, make requests, and see what is available in Plex.</span><span>192.168.0.102:5055</span></a>
+<a class="featured" href="http://192.168.0.102:5055"><strong>Seerr</strong><span>Browse films and TV, make requests, and see what is available in Plex.</span><span>192.168.0.102:5055</span></a>
 <a href="http://192.168.0.102:8989"><strong>Sonarr</strong><span>Track TV series, find episodes through your indexers, and import completed downloads into bobTV.</span><span>192.168.0.102:8989</span></a>
 <a href="http://192.168.0.102:7878"><strong>Radarr</strong><span>Track films, find releases through your indexers, and import completed downloads into bobFilms.</span><span>192.168.0.102:7878</span></a>
 <a href="http://192.168.0.102:9696"><strong>Prowlarr</strong><span>Manage your torrent search sources and share them with Sonarr and Radarr.</span><span>192.168.0.102:9696</span></a>
