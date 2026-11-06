@@ -332,8 +332,9 @@ def main():
         p = Path(values[key])
         if p == destination or p in destination.parents or destination in p.parents:
             raise ValueError(f'{key} must be separate from the deployment directory.')
-    for key in ('MEDIA_UID', 'MEDIA_GID', 'SEERR_UID', 'SEERR_GID'):
-        values[key] = ask(key + ' (numeric non-root account/group)', validate=numeric)
+    # Existing TNAS Plex account, selected by the user; no new account required.
+    values.update(MEDIA_UID='10001', MEDIA_GID='10002',
+                  SEERR_UID='10001', SEERR_GID='10002')
     values['TZ'] = ask('Timezone', 'Europe/London')
     values['NAS_BIND_IP'] = ask('NAS LAN IPv4', validate=ipv4)
     used_ports = set()

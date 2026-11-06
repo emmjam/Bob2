@@ -24,7 +24,7 @@ require a GitHub token with Contents read access: supply GH_TOKEN/GITHUB_TOKEN i
 the process environment or use the hidden prompt after an access-denied response.
 The script never saves the token. A 404 can also mean the repository/ref is wrong.
 
-The script prompts for every required setting, with the agreed film/TV paths and
+The script fills image references and Plex account IDs automatically and prompts for the remaining settings, with the agreed film/TV paths and
 suggested directory, timezone and port defaults. All six images are hard-coded to `latest`; there are no image prompts. The script does not pull images. Credentials
 are hidden and passwords confirmed. It writes a private mode-600 `.env`, creates
 the resolver file, and prepares the service/download directories. New service
@@ -66,8 +66,8 @@ Fill `.env` as described below and prepare directories/permissions yourself.
 | DOWNLOAD_ROOT | Choose a dedicated absolute directory, e.g. `/Volume1/SHARED/bobDownloads`; not created or approved yet |
 | CONFIG_ROOT | Choose a private, persistent absolute directory outside downloads/libraries; not selected yet |
 | TRANSMISSION_RESOLV_FILE | Absolute filename of the private resolver copy above |
-| MEDIA_UID / MEDIA_GID | Dedicated non-root media account/group with write access to downloads, pilot libraries and LSIO config directories |
-| SEERR_UID / SEERR_GID | Numerical account/group with write access to the Seerr config directory; does not need media access |
+| MEDIA_UID / MEDIA_GID | Automatically uses the existing Plex account: UID `10001`, GID `10002`; no prompts or new user |
+| SEERR_UID / SEERR_GID | Automatically uses the same Plex UID `10001`, GID `10002`; no prompts |
 | TZ | `Europe/London` is the intended timezone |
 | NAS_BIND_IP | Current trusted NAS IPv4; explicit address required |
 | SONARR_PORT / RADARR_PORT / PROWLARR_PORT / SEERR_PORT | Suggested `8989` / `7878` / `9696` / `5055`; availability unverified |

@@ -153,7 +153,7 @@ class DeploymentTests(unittest.TestCase):
                 if key in ('DOWNLOAD_ROOT', 'FILMS_ROOT', 'TV_ROOT'):
                     return str(root / key.lower())
                 if key.endswith(('_UID', '_GID')):
-                    return '1234'
+                    self.fail('Plex account IDs must not prompt the user')
                 if key == 'NAS_BIND_IP':
                     return '192.168.1.2'
                 if 'PASSWORD' in key:
@@ -177,6 +177,9 @@ class DeploymentTests(unittest.TestCase):
             self.assertTrue((destination / '.env').is_file())
             for key, repo in deploy.REPOS.items():
                 self.assertIn(f"{key}='{repo}:latest'", (destination / '.env').read_text())
+            for key, value in {'MEDIA_UID': '10001', 'MEDIA_GID': '10002',
+                               'SEERR_UID': '10001', 'SEERR_GID': '10002'}.items():
+                self.assertIn(f"{key}='{value}'", (destination / '.env').read_text())
             self.assertTrue((destination / 'appdata/sonarr').is_dir())
             self.assertEqual((destination / 'appdata/sonarr').stat().st_mode & 0o777, 0o700)
             self.assertNotIn('private$password', output.getvalue())
