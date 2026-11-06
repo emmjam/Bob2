@@ -351,7 +351,7 @@ def main():
     os.umask(0o077)
     repo = 'emmjam/Bob2'
     ref = 'main'
-    destination = Path(ask('Absolute deployment destination', '/Volume2/Bob2', validate=absolute))
+    destination = Path(ask('Absolute deployment destination', '/home/ian/BOB2', validate=absolute))
     if os.geteuid() != 0:
         raise ValueError('Run this script as root on TNAS to prepare app-owned directories.')
     vpn_credentials = nordvpn_credentials()
@@ -406,7 +406,7 @@ def main():
         secret = key != 'NORDVPN_COUNTRIES'
         while True:
             value = ask(key + (' (Nord service credentials, not account login)'
-                              if key.startswith('NORDVPN_SERVICE') else ''), secret=secret, validate=dotenv)
+                              if key.startswith('NORDVPN_SERVICE') else ''), default='ian' if key == 'TRANSMISSION_USER' else '', secret=secret, validate=dotenv)
             if 'PASSWORD' in key:
                 if getpass.getpass('Confirm password: ') != value:
                     print('Passwords differ; try again.')

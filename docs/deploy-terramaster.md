@@ -15,7 +15,7 @@ python3 /path/to/deploy.py
 ```
 
 It downloads directly from `emmjam/Bob2`, branch `main`, without repository or
-branch prompts. It asks only for the deployment destination before download.
+branch prompts. It asks for the deployment destination (default `/home/ian/BOB2`) before download.
 The destination is emptied first, preserving only the deploy script.
 This deletes previous `.env`, resolver files and appdata inside the destination.
 Use a dedicated Bob2 directory; media/downloads outside it are untouched.
@@ -74,7 +74,7 @@ Fill `.env` as described below and prepare directories/permissions yourself.
 | SONARR_PORT / RADARR_PORT / PROWLARR_PORT / SEERR_PORT | Uses `8989` / `7878` / `9696` / `5055` automatically; prompts for an alternative only when unavailable |
 | NORDVPN_SERVICE_USER / NORDVPN_SERVICE_PASSWORD | Read automatically from `/home/ian/.nordvpn` on TNAS; no credential prompts |
 | NORDVPN_COUNTRIES | Automatically set to `Netherlands`; no prompt |
-| TRANSMISSION_USER / TRANSMISSION_PASSWORD | Choose private downloader RPC credentials |
+| TRANSMISSION_USER / TRANSMISSION_PASSWORD | Username defaults to `ian`; supply a private downloader RPC password |
 | All six *_IMAGE variables | Automatically set to `latest` from the repositories listed in `.env.example`; no prompts |
 
 Create config subdirectories named gluetun, transmission, sonarr, radarr,
