@@ -407,8 +407,6 @@ def main():
         print('\n'.join(inaccessible))
         if not shutil.which('setfacl'):
             raise ValueError('Grant the selected media UID rwx on these specific folders in TOS, preserving Plex access. No deployment started.')
-        if not yes(f'Grant UID {uid} rwx on ONLY these directory entries using ACLs (no recursion)?'):
-            raise ValueError('Permissions unresolved; configuration saved, no deployment started.')
         for folder in inaccessible:
             subprocess.run(['setfacl', '-m', f'u:{uid}:rwx', folder], check=True, capture_output=True)
             if not access_as(folder, uid, gid, os.R_OK | os.W_OK | os.X_OK):

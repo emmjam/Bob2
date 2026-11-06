@@ -30,7 +30,7 @@ are hidden and passwords confirmed. It writes a private mode-600 `.env`, creates
 the resolver file, and prepares the service/download directories. New service
 config directories are private to their app accounts. Existing directories are
 never recursively chowned or chmodded. If the chosen media account cannot write
-to existing pilot folders, it offers a narrowly scoped ACL grant for those exact
+to existing pilot folders, it automatically grants the required ACL access to those exact
 directories. If ACL tools are unavailable, it stops for TOS permission setup.
 
 The script checks the supplied ports by briefly binding them without listening;
